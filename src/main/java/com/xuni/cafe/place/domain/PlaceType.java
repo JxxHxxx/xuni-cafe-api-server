@@ -1,5 +1,5 @@
 package com.xuni.cafe.place.domain;
 
 public enum PlaceType {
-    CAFE, STUDY_ROOM, ETC
+    FRANCHISE_CAFE, PERSONAL_CAFE, STUDY_CAFE, ETC
 }

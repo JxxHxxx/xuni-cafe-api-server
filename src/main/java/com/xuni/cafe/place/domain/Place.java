@@ -20,11 +20,11 @@ public class Place {
     private List<PlaceTag> tags;
 
     @Builder
-    public Place(String name, Recommend recommend, PlaceType type, Address address, List<PlaceTag> placeTags) {
+    public Place(String name, Recommend recommend, PlaceType type, Address address, List<PlaceTag> tags) {
         this.name = name;
         this.recommend = recommend;
         this.type = type;
-        this.tags = placeTags;
+        this.tags = tags;
         this.address = address;
     }
 }

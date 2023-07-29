@@ -11,7 +11,6 @@ public enum Feature {
     private Integer id;
     private String desc;
 
-
     Feature(Integer id, String desc) {
         this.id = id;
         this.desc = desc;

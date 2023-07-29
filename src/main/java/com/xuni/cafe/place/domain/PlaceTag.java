@@ -7,9 +7,14 @@ public class PlaceTag {
     private final Feature feature;
     private Integer agreement;
 
-    public PlaceTag(Feature feature, Integer agreement) {
+
+    private PlaceTag(Feature feature) {
         this.feature = feature;
-        this.agreement = agreement;
+        this.agreement = 0;
+    }
+
+    public static PlaceTag from(Feature feature) {
+        return new PlaceTag(feature);
     }
 
     public void increaseAgreement() {

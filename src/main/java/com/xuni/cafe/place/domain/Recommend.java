@@ -8,9 +8,13 @@ public class Recommend {
     private final String recommender;
     private boolean flag;
 
-    public Recommend(Long recommenderId, String recommender) {
+    private Recommend(Long recommenderId, String recommender) {
         this.recommenderId = recommenderId;
         this.recommender = recommender;
         this.flag = true;
+    }
+
+    public static Recommend of(Long recommenderId, String recommender) {
+        return new Recommend(recommenderId, recommender);
     }
 }
