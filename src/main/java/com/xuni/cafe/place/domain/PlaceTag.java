@@ -1,12 +1,13 @@
 package com.xuni.cafe.place.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class PlaceTag {
-    private final Feature feature;
+    private Feature feature;
     private Integer agreement;
-
 
     private PlaceTag(Feature feature) {
         this.feature = feature;
