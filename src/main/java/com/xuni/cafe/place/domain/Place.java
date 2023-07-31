@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Document(collection = "places")
@@ -22,6 +23,7 @@ public class Place {
 
     @Builder
     public Place(String name, Recommend recommend, PlaceType type, Address address, List<PlaceTag> tags) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.recommend = recommend;
         this.type = type;
