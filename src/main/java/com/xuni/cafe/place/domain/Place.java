@@ -16,18 +16,16 @@ public class Place {
     @Id
     private String id;
     private String name;
-    private Recommend recommend;
     private PlaceType type;
     private Address address;
-    private List<PlaceTag> tags;
 
+    private List<Room> rooms;
+    private Operation operation;
     @Builder
-    public Place(String name, Recommend recommend, PlaceType type, Address address, List<PlaceTag> tags) {
+    public Place(String name, PlaceType type, Address address, List<Room> rooms, Operation operation) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
-        this.recommend = recommend;
         this.type = type;
-        this.tags = tags;
         this.address = address;
     }
 

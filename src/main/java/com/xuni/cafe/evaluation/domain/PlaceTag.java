@@ -1,4 +1,4 @@
-package com.xuni.cafe.place.domain;
+package com.xuni.cafe.evaluation.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

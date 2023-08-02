@@ -1,20 +1,22 @@
 package com.xuni.cafe.place.application;
 
-import com.xuni.cafe.place.domain.Place;
-import com.xuni.cafe.place.domain.PlaceRepository;
-import com.xuni.cafe.place.domain.PlaceTag;
+import com.xuni.cafe.place.domain.*;
 import com.xuni.cafe.place.dto.request.PlaceForm;
 import com.xuni.cafe.place.dto.response.PlaceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.DayOfWeek;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class PlaceService {
+
+    private static final int ROOM_START_NUMBER = 1;
+    private static final int ADJUSTMENT_VALUE_FOR_IDX = 1;
 
     private final PlaceRepository placeRepository;
 
@@ -23,13 +25,25 @@ public class PlaceService {
                 .name(form.placeName())
                 .type(form.placeType())
                 .address(form.address())
-                .tags(createPlaceTags(form))
+                .rooms(createRoom(form))
+                .operation(createOperation(form))
                 .build());
     }
 
-    private static List<PlaceTag> createPlaceTags(PlaceForm form) {
-        return form.features().stream()
-                .map(feature -> PlaceTag.from(feature))
+    private Operation createOperation(PlaceForm form) {
+        return Operation.of(form.opening(), form.closing(), generateClosedDays(form.closedDays()));
+    }
+
+    private List<DayOfWeek> generateClosedDays(List<Integer> dayOfWeekIntValues) {
+        return dayOfWeekIntValues.stream()
+                .map(values -> DayOfWeek.of(values))
+                .toList();
+    }
+
+    private List<Room> createRoom(PlaceForm form) {
+        int roomLastNumber = form.capacities().size();
+        return IntStream.rangeClosed(ROOM_START_NUMBER, roomLastNumber)
+                .mapToObj(roomNumber -> new Room(roomNumber, form.capacities().get(roomNumber - ADJUSTMENT_VALUE_FOR_IDX)))
                 .toList();
     }
 
