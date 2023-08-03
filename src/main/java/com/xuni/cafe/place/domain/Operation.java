@@ -1,10 +1,12 @@
 package com.xuni.cafe.place.domain;
 
 import lombok.Getter;
+import org.springframework.web.server.ServerWebInputException;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 import static com.xuni.cafe.place.domain.exception.PlaceExceptionMessage.INCORRECT_OPERATION_TIME;
 
@@ -25,9 +27,9 @@ public class Operation {
         return new Operation(opening, closing, closedDays);
     }
 
-    protected void verifyOpeningHours() {
+    protected void verifyOperationHours() {
         if (opening.isAfter(closing)) {
-            throw new IllegalArgumentException(INCORRECT_OPERATION_TIME);
+            throw new ServerWebInputException(INCORRECT_OPERATION_TIME);
         }
     }
 
@@ -41,5 +43,18 @@ public class Operation {
 
     public void setHolidays(List<DayOfWeek> holidays){
         this.holidays = holidays;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Operation operation = (Operation) o;
+        return Objects.equals(opening, operation.opening) && Objects.equals(closing, operation.closing) && Objects.equals(holidays, operation.holidays);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(opening, closing, holidays);
     }
 }

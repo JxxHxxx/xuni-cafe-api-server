@@ -2,6 +2,7 @@ package com.xuni.cafe.place.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ServerWebInputException;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -20,7 +21,7 @@ class OperationTest {
                 LocalTime.of(21, 0, 0),
                 List.of());
 
-        assertThatCode(() -> operation.verifyOpeningHours())
+        assertThatCode(() -> operation.verifyOperationHours())
                 .doesNotThrowAnyException();
 
     }
@@ -36,9 +37,9 @@ class OperationTest {
                 LocalTime.of(8, 0, 0),
                 List.of());
 
-        assertThatCode(() -> operation.verifyOpeningHours())
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(INCORRECT_OPERATION_TIME);
+        assertThatCode(() -> operation.verifyOperationHours())
+                .isInstanceOf(ServerWebInputException.class)
+                .hasMessageContaining(INCORRECT_OPERATION_TIME);
 
     }
 }

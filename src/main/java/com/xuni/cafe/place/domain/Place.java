@@ -36,6 +36,10 @@ public class Place {
         this.operation = operation;
     }
 
+    public void verifyFields() {
+        operation.verifyOperationHours();
+    }
+
     void verifyOwner(Long ownerId) {
         if (this.ownerId != ownerId) {
             throw new NotPermissionException();
@@ -62,11 +66,11 @@ public class Place {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Place place = (Place) o;
-        return Objects.equals(id, place.id);
+        return Objects.equals(ownerId, place.ownerId) && Objects.equals(name, place.name) && type == place.type && Objects.equals(address, place.address) && Objects.equals(rooms, place.rooms) && Objects.equals(operation, place.operation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(ownerId, name, type, address, rooms, operation);
     }
 }
