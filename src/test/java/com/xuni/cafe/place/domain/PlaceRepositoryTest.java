@@ -1,8 +1,7 @@
 package com.xuni.cafe.place.domain;
 
 import com.xuni.cafe.config.MongoDBConfig;
-import com.xuni.cafe.util.DocumentCreator;
-import org.junit.jupiter.api.Disabled;
+import com.xuni.cafe.util.PlaceDocumentFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -34,7 +33,7 @@ public class PlaceRepositoryTest {
 
     @Test
     void save() {
-        Place place = DocumentCreator.place();
+        Place place = PlaceDocumentFactory.place();
 
         Mono<Place> placeMono = placeRepository.save(place);
         Mono<Place> findPlaceMono = placeRepository.findById(placeMono.map(p -> p.getId()));
