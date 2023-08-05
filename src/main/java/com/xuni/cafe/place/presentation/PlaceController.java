@@ -7,25 +7,61 @@ import com.xuni.cafe.place.domain.Place;
 import com.xuni.cafe.place.dto.request.PlaceForm;
 import com.xuni.cafe.place.dto.response.PlaceResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.List;
 
 import static com.xuni.cafe.place.dto.response.PlaceAPiMessage.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @RestController
 public class PlaceController {
 
     private final PlaceService placeService;
+    private final WebClient webClient;
 
-    public PlaceController(PlaceService placeService) {
+    @Value("${api.server.xuni.uri-test}")
+    private String XUNI_REQUEST;
+
+    public PlaceController(PlaceService placeService, @Qualifier("xuniClient") WebClient webClient) {
         this.placeService = placeService;
+        this.webClient = webClient;
     }
+
+    @PostMapping("/v2/places")
+    public Mono<ResponseEntity<ListResponseBody>> savePlaceV2(@RequestHeader(AUTHORIZATION) String authorization,
+                                                            @RequestBody @Valid Mono<PlaceForm> formMono) {
+
+        webClient.get().uri(XUNI_REQUEST)
+                .header(AUTHORIZATION, authorization)
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(data -> log.info("response {}", data))
+                .onErrorResume(WebClientResponseException.class,  exception -> Mono.just(exception.getMessage()))
+                .subscribe();
+
+        Mono<Place> placeMono = formMono
+                .flatMap(form -> placeService.enrollPlace(form));
+
+        return placeMono.map(place -> ResponseEntity
+                        .created(URI.create("/places/" + place.getId()))
+                        .body(new ListResponseBody(200, List.of(ENROLL), place)))
+                .onErrorResume(WebExchangeBindException.class, exception -> Mono.just(ResponseEntity
+                        .badRequest()
+                        .body(new ListResponseBody(400, getErrorMessages(exception)))));
+    }
+
 
     @PostMapping("/places")
     public Mono<ResponseEntity<ListResponseBody>> savePlace(@RequestBody @Valid Mono<PlaceForm> formMono) {
@@ -62,7 +98,6 @@ public class PlaceController {
                 .body(new SimpleResponseBody<>(200, READ_MANY, placeResponses)));
 
     }
-
     @PostMapping("/le/places")
     public Mono<ResponseEntity<ListResponseBody>> savePlacele(@RequestBody @Valid Mono<PlaceForm> formMono) {
         Mono<Place> placeMono = formMono
