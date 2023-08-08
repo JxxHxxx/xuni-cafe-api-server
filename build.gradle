@@ -65,6 +65,8 @@ project(':xuni-cafe-batch') {
         implementation 'org.springframework.boot:spring-boot-starter-batch'
         implementation 'org.springframework.boot:spring-boot-starter-web'
 
+        runtimeOnly 'com.h2database:h2'
+
         testImplementation 'org.springframework.batch:spring-batch-test'
     }
 }
