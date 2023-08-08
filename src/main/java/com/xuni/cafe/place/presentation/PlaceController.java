@@ -40,14 +40,13 @@ public class PlaceController {
     }
 
     @PostMapping("/v2/places")
-    public Mono<ResponseEntity<ListResponseBody>> savePlaceV2(@RequestHeader(AUTHORIZATION) String authorization,
-                                                            @RequestBody @Valid Mono<PlaceForm> formMono) {
+    public Mono<ResponseEntity<ListResponseBody>> savePlaceV2(@RequestHeader(name = AUTHORIZATION) String authorization,
+                                                              @RequestBody @Valid Mono<PlaceForm> formMono) {
 
         webClient.get().uri(XUNI_REQUEST)
                 .header(AUTHORIZATION, authorization)
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnNext(data -> log.info("response {}", data))
                 .onErrorResume(WebClientResponseException.class,  exception -> Mono.just(exception.getMessage()))
                 .subscribe();
 
