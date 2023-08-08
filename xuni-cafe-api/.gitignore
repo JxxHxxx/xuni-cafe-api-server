@@ -35,7 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-/xuni-cafe-api/src/main/resources/application.yml
-/xuni-cafe-api/src/test/resources/application.yml
-/xuni-cafe-batch/src/main/resources/application.yml
-/xuni-cafe-batch/src/test/resources/application.yml
