@@ -1,5 +1,6 @@
 package com.xuni.cafe.api.schedule.domain;
 
+import com.xuni.cafe.api.common.exception.NotPermissionException;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -25,4 +26,18 @@ public class Information {
         this.canceled = false;
     }
 
+    public static Information of(Long costumerId, LocalDate reservedDate, LocalTime reservedTime, Integer reservationPersonnel) {
+        return new Information(costumerId, reservedDate, reservedTime, reservationPersonnel);
+    }
+
+    public boolean isNotCanceled() {
+        return !canceled;
+    }
+
+    public void cancel(Long costumerId) {
+        if (this.costumerId != costumerId) {
+            throw new NotPermissionException();
+        }
+        canceled = true;
+    }
 }
