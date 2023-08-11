@@ -30,4 +30,11 @@ public class Schedule {
         this.reservations = reservations;
     }
 
+    public Reservation receiveReservationOf(Weekend weekend) {
+         return reservations.stream()
+                 .filter(reservation -> reservation.checkWeekend(weekend))
+                 .findFirst()
+                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주간 예약"));
+    }
+
 }

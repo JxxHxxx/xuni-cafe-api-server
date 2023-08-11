@@ -16,7 +16,17 @@ public class Reservation {
         this.informations = informations;
     }
 
-    public static Reservation of(Weekend weekend,List<Information> informations) {
+    public static Reservation init(Weekend weekend, List<Information> informations) {
         return new Reservation(weekend, informations);
+    }
+
+    public List<Information> receiveNotCanceledInformation() {
+        return informations.stream()
+                .filter(information -> information.isNotCanceled())
+                .toList();
+    }
+
+     boolean checkWeekend(Weekend weekend) {
+        return this.weekend.equals(weekend);
     }
 }
