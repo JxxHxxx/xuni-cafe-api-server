@@ -1,8 +1,8 @@
 package com.xuni.cafe.api.place.dto.request;
 
 import com.xuni.cafe.api.place.application.OperationValid;
-import com.xuni.cafe.api.place.domain.Address;
-import com.xuni.cafe.api.place.domain.PlaceType;
+import com.xuni.cafe.core.place.domain.Address;
+import com.xuni.cafe.core.place.domain.PlaceType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

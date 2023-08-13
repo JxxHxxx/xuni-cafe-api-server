@@ -1,11 +1,11 @@
 package com.xuni.cafe.api.place.application;
 
-import com.xuni.cafe.api.place.domain.Operation;
-import com.xuni.cafe.api.place.domain.Place;
-import com.xuni.cafe.api.place.domain.PlaceRepository;
-import com.xuni.cafe.api.place.domain.Room;
+import com.xuni.cafe.api.place.PlaceRepository;
 import com.xuni.cafe.api.place.dto.request.PlaceForm;
 import com.xuni.cafe.api.place.dto.response.PlaceResponse;
+import com.xuni.cafe.core.place.domain.Operation;
+import com.xuni.cafe.core.place.domain.Place;
+import com.xuni.cafe.core.place.domain.Room;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

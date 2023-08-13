@@ -1,15 +1,14 @@
 package com.xuni.cafe.api.place.presentation;
 
-import com.xuni.cafe.api.place.domain.Place;
 import com.xuni.cafe.api.place.dto.response.PlaceResponse;
 import com.xuni.cafe.api.common.response.ListResponseBody;
 import com.xuni.cafe.api.common.response.SimpleResponseBody;
 import com.xuni.cafe.api.place.application.PlaceService;
 import com.xuni.cafe.api.place.dto.request.PlaceForm;
+import com.xuni.cafe.core.place.domain.Place;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.WebExchangeBindException;
@@ -31,19 +30,15 @@ public class PlaceController {
     private final PlaceService placeService;
     private final WebClient webClient;
 
-    @Value("${api.server.xuni.uri-test}")
-    private String XUNI_REQUEST;
-
     public PlaceController(PlaceService placeService, @Qualifier("xuniClient") WebClient webClient) {
         this.placeService = placeService;
         this.webClient = webClient;
     }
 
     @PostMapping("/v2/places")
-    public Mono<ResponseEntity<ListResponseBody>> savePlaceV2(@RequestHeader(name = AUTHORIZATION) String authorization,
-                                                              @RequestBody @Valid Mono<PlaceForm> formMono) {
+    public Mono<ResponseEntity<ListResponseBody>> savePlaceV2(@RequestHeader(name = AUTHORIZATION) String authorization, @RequestBody @Valid Mono<PlaceForm> formMono) {
 
-        webClient.get().uri(XUNI_REQUEST)
+        webClient.get().uri("/api/auth")
                 .header(AUTHORIZATION, authorization)
                 .retrieve()
                 .bodyToMono(String.class)
