@@ -1,4 +1,5 @@
 rootProject.name = 'xuni-cafe-server'
 
+include 'xuni-cafe-core'
 include 'xuni-cafe-api'
 include 'xuni-cafe-batch'

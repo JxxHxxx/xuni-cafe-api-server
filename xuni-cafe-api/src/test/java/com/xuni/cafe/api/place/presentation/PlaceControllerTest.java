@@ -1,11 +1,9 @@
 package com.xuni.cafe.api.place.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xuni.cafe.api.place.domain.Address;
-import com.xuni.cafe.api.place.domain.PlaceType;
-import com.xuni.cafe.api.place.domain.exception.PlaceExceptionMessage;
+import com.xuni.cafe.core.place.domain.Address;
+import com.xuni.cafe.core.place.domain.PlaceType;
 import com.xuni.cafe.api.place.dto.request.PlaceForm;
-import com.xuni.cafe.api.place.dto.response.PlaceAPiMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

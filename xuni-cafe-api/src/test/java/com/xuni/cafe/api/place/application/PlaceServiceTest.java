@@ -1,8 +1,8 @@
 package com.xuni.cafe.api.place.application;
 
-import com.xuni.cafe.api.place.domain.*;
 import com.xuni.cafe.api.place.dto.request.PlaceForm;
 import com.xuni.cafe.api.util.ServiceTest;
+import com.xuni.cafe.core.place.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;

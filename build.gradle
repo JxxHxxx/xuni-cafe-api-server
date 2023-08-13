@@ -2,9 +2,17 @@ plugins {
     id 'java'
     id("org.springframework.boot") version "3.1.0"
     id ('io.spring.dependency-management') version "1.1.0"
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
+
 }
 // Execution failed for task ':bootJar 이슈
 bootJar.enabled = false
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
 
 // 하위 모든 프로젝트 공통 세팅
 subprojects {
@@ -35,40 +43,86 @@ subprojects {
 
         implementation 'org.springframework.boot:spring-boot-starter'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    }
 
-    test {
-        useJUnitPlatform()
+        test {
+            useJUnitPlatform()
+        }
     }
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform(
+    )
+}
+
+project(':xuni-cafe-core') {
+
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        // https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb
+        implementation 'org.springframework.data:spring-data-mongodb:4.1.0'
+    }
 }
 
 project(':xuni-cafe-api') {
-    bootJar { enabled = true }
-    jar { enabled = false }
+
+    apply plugin: 'org.asciidoctor.jvm.convert'
+
+    ext {
+        snippetsDir = file('build/generated-snippets')
+    }
+
+    asciidoctor {
+        inputs.dir snippetsDir
+        dependsOn test
+    }
+
+    test {
+        outputs.dir snippetsDir
+    }
+
+    bootJar {
+        enabled = true
+    }
+    jar {
+        enabled = false
+    }
+
+    configurations {
+        asciidoctorExtensions
+    }
 
     dependencies {
+        implementation project(':xuni-cafe-core')
+
         implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
         implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+        asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+        testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc')
         testImplementation 'io.projectreactor:reactor-test'
     }
 }
 
 project(':xuni-cafe-batch') {
-    bootJar { enabled = true }
-    jar { enabled = false }
+    bootJar {
+        enabled = true
+    }
+    jar {
+        enabled = false
+    }
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-batch'
         implementation 'org.springframework.boot:spring-boot-starter-web'
 
-        runtimeOnly 'com.h2database:h2'
+        implementation project(':xuni-cafe-core')
+        implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+        runtimeOnly 'com.h2database:h2'
         testImplementation 'org.springframework.batch:spring-batch-test'
     }
 }
-

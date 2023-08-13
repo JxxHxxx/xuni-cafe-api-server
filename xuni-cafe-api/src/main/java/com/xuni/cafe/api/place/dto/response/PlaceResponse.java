@@ -1,6 +1,6 @@
 package com.xuni.cafe.api.place.dto.response;
 
-import com.xuni.cafe.api.place.domain.Address;
+import com.xuni.cafe.core.place.domain.Address;
 
 public record PlaceResponse(
         String placeName,
