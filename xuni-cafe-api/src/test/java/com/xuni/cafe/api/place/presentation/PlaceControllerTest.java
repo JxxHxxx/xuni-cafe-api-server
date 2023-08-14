@@ -19,7 +19,7 @@ import java.util.List;
 import static com.xuni.cafe.api.place.dto.response.PlaceAPiMessage.ENROLL;
 import static com.xuni.cafe.api.place.dto.response.PlaceAPiMessage.INVALID_OPERATION;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.main.web-application-type=reactive")
 @AutoConfigureWebTestClient
 class PlaceControllerTest {
 
