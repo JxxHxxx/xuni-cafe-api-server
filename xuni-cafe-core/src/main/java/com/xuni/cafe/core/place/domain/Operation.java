@@ -1,6 +1,5 @@
 package com.xuni.cafe.core.place.domain;
 
-import com.xuni.cafe.core.place.domain.exception.PlaceExceptionMessage;
 import com.xuni.cafe.core.place.domain.exception.PlaceFieldValidException;
 import lombok.Getter;
 
@@ -28,7 +27,7 @@ public class Operation {
         return new Operation(opening, closing, closedDays);
     }
 
-    protected void verifyOperationHours() {
+    protected void validateOperationHours() {
         if (opening.isAfter(closing)) {
             throw new PlaceFieldValidException(INCORRECT_OPERATION_TIME);
         }

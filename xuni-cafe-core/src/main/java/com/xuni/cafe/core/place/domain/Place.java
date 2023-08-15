@@ -3,7 +3,9 @@ package com.xuni.cafe.core.place.domain;
 import com.xuni.cafe.core.common.exception.NotPermissionException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.DayOfWeek;
@@ -14,6 +16,7 @@ import java.util.UUID;
 
 // TODO : 장소 등록 후 -> 검증을 받아야 노출되는 형태로
 
+@Slf4j
 @Getter
 @Document(collection = "places")
 public class Place {
@@ -23,6 +26,7 @@ public class Place {
     private String name;
     private Long ownerId;
     private PlaceType type;
+    @Indexed(unique = true)
     private Address address;
     private List<Room> rooms;
     private Operation operation;
@@ -38,29 +42,27 @@ public class Place {
         this.operation = operation;
     }
 
-    public void verifyFields() {
-        operation.verifyOperationHours();
+    public void verifyPlaceValidation() {
+        operation.validateOperationHours();
     }
 
     void verifyOwner(Long ownerId) {
+        log.info("check owner input ownerId {}, place ownerId {}",  ownerId, this.ownerId);
+
         if (this.ownerId != ownerId) {
             throw new NotPermissionException();
         }
     }
 
-    public void changeOpening(Long ownerId, LocalTime opening) {
+    // TODO : ownerId 인자와 인스턴스가 가진 ownerId 가 일치해도 verifyOwner 메서드를 통과하지 못하는 이슈
+    public void changeOperation(Long ownerId, LocalTime opening, LocalTime closing, List<DayOfWeek> holidays) {
         verifyOwner(ownerId);
         operation.setOpening(opening);
-    }
+        operation.setClosing(closing);
+        operation.validateOperationHours();
 
-    public void changeClosing(Long ownerId, LocalTime opening) {
-        verifyOwner(ownerId);
-        operation.setClosing(opening);
-    }
-
-    public void changeHolidays(Long ownerId, List<DayOfWeek> holidays){
-        verifyOwner(ownerId);
         operation.setHolidays(holidays);
+
     }
 
     @Override

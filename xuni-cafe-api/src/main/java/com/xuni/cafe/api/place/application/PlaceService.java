@@ -1,6 +1,7 @@
 package com.xuni.cafe.api.place.application;
 
 import com.xuni.cafe.api.place.PlaceRepository;
+import com.xuni.cafe.api.place.dto.request.OperationForm;
 import com.xuni.cafe.api.place.dto.request.PlaceForm;
 import com.xuni.cafe.api.place.dto.response.PlaceResponse;
 import com.xuni.cafe.core.place.domain.Operation;
@@ -33,7 +34,7 @@ public class PlaceService {
                 .operation(createOperation(form))
                 .build();
 
-        place.verifyFields();
+        place.verifyPlaceValidation();
 
         return placeRepository.save(place);
     }
@@ -66,7 +67,24 @@ public class PlaceService {
 
     private static List<PlaceResponse> toPlaceResponse(List<Place> places) {
         return places.stream()
-                .map(place -> PlaceResponse.of(place.getName(), place.getAddress()))
+                .map(place -> PlaceResponse.of(
+                        place.getName(),
+                        place.getType(),
+                        place.getAddress(),
+                        place.getRooms(),
+                        place.getOperation())
+                )
                 .toList();
+    }
+
+    public Mono<Place> changeOperation(String placeId, OperationForm form) {
+        Mono<Place> placeMono = placeRepository.findById(placeId);
+
+        return placeMono
+                .flatMap(place -> {
+                    place.changeOperation(form.ownerId(), form.opening(), form.closing(), form.holidays());
+                    return placeRepository.save(place);
+                });
+
     }
 }

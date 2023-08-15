@@ -21,7 +21,7 @@ class OperationTest {
                 LocalTime.of(21, 0, 0),
                 List.of());
 
-        assertThatCode(() -> operation.verifyOperationHours())
+        assertThatCode(() -> operation.validateOperationHours())
                 .doesNotThrowAnyException();
     }
 
@@ -36,7 +36,7 @@ class OperationTest {
                 LocalTime.of(8, 0, 0),
                 List.of());
 
-        assertThatCode(() -> operation.verifyOperationHours())
+        assertThatCode(() -> operation.validateOperationHours())
                 .isInstanceOf(PlaceFieldValidException.class)
                 .hasMessageContaining(INCORRECT_OPERATION_TIME);
     }
