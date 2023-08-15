@@ -11,7 +11,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 class PlaceTest {
 
     @DisplayName("Place 도큐먼트 초기화 시 기본 필드 체크")

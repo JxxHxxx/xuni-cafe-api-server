@@ -1,5 +1,7 @@
 package com.xuni.cafe.api.place.presentation;
 
+import com.xuni.cafe.api.common.response.BasicResponseBody;
+import com.xuni.cafe.api.place.dto.request.OperationForm;
 import com.xuni.cafe.api.place.dto.response.PlaceResponse;
 import com.xuni.cafe.api.common.response.ListResponseBody;
 import com.xuni.cafe.api.common.response.SimpleResponseBody;
@@ -78,7 +80,8 @@ public class PlaceController {
     @GetMapping("/places/{place-id}")
     public Mono<ResponseEntity<SimpleResponseBody>> findPlace(@PathVariable("place-id") String placeId) {
         Mono<SimpleResponseBody> bodyMono = placeService.findOne(placeId)
-                .map(place -> new SimpleResponseBody<>(200, READ_ONE, PlaceResponse.of(place.getName(), place.getAddress())));
+                .map(place -> new SimpleResponseBody<>(200, READ_ONE,
+                        PlaceResponse.of(place.getName(),place.getType(), place.getAddress(), place.getRooms(), place.getOperation())));
 
         return bodyMono.map(body -> ResponseEntity.status(OK).body(body));
     }
@@ -92,6 +95,18 @@ public class PlaceController {
                 .body(new SimpleResponseBody<>(200, READ_MANY, placeResponses)));
 
     }
+
+    @PatchMapping("/places/{place-id}/change-operation")
+    public Mono<ResponseEntity<BasicResponseBody>> changeOperation(@PathVariable("place-id") String placeId,
+                                                                    @RequestBody OperationForm form) {
+        Mono<Place> placeMono = placeService.changeOperation(placeId, form);
+        return placeMono
+                .map(place -> ResponseEntity.status(200)
+                        .body(new BasicResponseBody(200, "수정 완료")));
+    }
+
+
+
     @PostMapping("/le/places")
     public Mono<ResponseEntity<ListResponseBody>> savePlacele(@RequestBody @Valid Mono<PlaceForm> formMono) {
         Mono<Place> placeMono = formMono

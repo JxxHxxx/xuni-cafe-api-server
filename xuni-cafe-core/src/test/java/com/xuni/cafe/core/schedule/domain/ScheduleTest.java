@@ -56,7 +56,7 @@ class ScheduleTest {
                 .reservations(List.of(reserveWeekOne, reserveWeekTwo))
                 .build();
 
-        Reservation reservation = schedule.receiveReservationOf(Weekend.of(LocalDate.of(2023, 8, 7), LocalDate.of(2023, 8, 13)));
+        Reservation reservation = schedule.receiveOneWeekReservation(Weekend.of(LocalDate.of(2023, 8, 7), LocalDate.of(2023, 8, 13)));
         List<Information> weeklyOneReservationInfo = reservation.getInformations();
 
         assertThat(weeklyOneReservationInfo).extracting("canceled").containsOnly(false);
