@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -35,7 +36,7 @@ class PlaceControllerTest {
         long ownerId = 1231l;
         LocalTime opening = LocalTime.of(12, 0);
         LocalTime closing = LocalTime.of(18, 0);
-        List<Integer> holidays = List.of(1);
+        List<DayOfWeek> holidays = List.of(DayOfWeek.MONDAY);
         List<Integer> capacities = List.of(4, 4, 2);
 
         PlaceForm placeForm = new PlaceForm(
@@ -68,7 +69,7 @@ class PlaceControllerTest {
         LocalTime closing = LocalTime.of(18, 0);
         // opening 은 closing 보다 빠를 수 없음
 
-        List<Integer> holidays = List.of(1);
+        List<DayOfWeek> holidays = List.of(DayOfWeek.MONDAY);
         List<Integer> capacities = List.of(4, 4, 2);
 
         PlaceForm placeForm = new PlaceForm(
@@ -102,7 +103,7 @@ class PlaceControllerTest {
         // opening 은 closing 보다 빠를 수 없음
 
         // holidays 에는 중복된 값이 들어갈 수 없음
-        List<Integer> holidays = List.of(1, 1);
+        List<DayOfWeek> holidays = List.of(DayOfWeek.MONDAY, DayOfWeek.MONDAY);
         List<Integer> capacities = List.of(4, 4, 2);
 
         int expectedErrorMessagesCount = 2;

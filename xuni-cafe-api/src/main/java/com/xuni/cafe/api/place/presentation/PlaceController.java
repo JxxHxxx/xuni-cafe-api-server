@@ -104,25 +104,4 @@ public class PlaceController {
                 .map(place -> ResponseEntity.status(200)
                         .body(new BasicResponseBody(200, "수정 완료")));
     }
-
-
-
-    @PostMapping("/le/places")
-    public Mono<ResponseEntity<ListResponseBody>> savePlacele(@RequestBody @Valid Mono<PlaceForm> formMono) {
-        Mono<Place> placeMono = formMono
-                .flatMap(form -> placeService.enrollPlace(form));
-
-        return placeMono.map(place -> ResponseEntity.created(URI.create("/places/" + place.getId()))
-                        .body(new ListResponseBody(200, List.of("성공"), place)))
-                .onErrorResume(WebExchangeBindException.class, exception -> Mono.just(ResponseEntity.badRequest()
-                        .body(new ListResponseBody(400, getErrorMessagesle(exception)))))
-                .onErrorResume(IllegalArgumentException.class, exception -> Mono.just(ResponseEntity.badRequest()
-                        .body(new ListResponseBody(400, List.of(exception.getMessage())))));
-    }
-
-
-    private static List<String> getErrorMessagesle(WebExchangeBindException exception) {
-        return exception.getFieldErrors().stream()
-                .map(fieldError -> fieldError.getDefaultMessage()).toList();
-    }
 }
