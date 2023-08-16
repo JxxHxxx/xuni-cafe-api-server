@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.time.DayOfWeek;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -40,13 +39,7 @@ public class PlaceService {
     }
 
     private Operation createOperation(PlaceForm form) {
-        return Operation.of(form.opening(), form.closing(), generateClosedDays(form.closedDays()));
-    }
-
-    private List<DayOfWeek> generateClosedDays(List<Integer> dayOfWeekIntValues) {
-        return dayOfWeekIntValues.stream()
-                .map(values -> DayOfWeek.of(values))
-                .toList();
+        return Operation.of(form.opening(), form.closing(), form.closedDays());
     }
 
     private List<Room> createRoom(PlaceForm form) {

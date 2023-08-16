@@ -1,14 +1,17 @@
 package com.xuni.cafe.core.place.domain;
 
-import com.xuni.cafe.core.common.exception.CommonExceptionMessage;
 import com.xuni.cafe.core.common.exception.NotPermissionException;
 import com.xuni.cafe.core.util.PlaceDocumentFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 
+import static com.xuni.cafe.core.common.exception.CommonExceptionMessage.NOT_PERMISSION;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PlaceTest {
@@ -31,8 +34,8 @@ class PlaceTest {
         String opening = place.getOperation().getOpening().toString();
 
         assertThat(address).isEqualTo(place.getAddress()).as("Address 객체 동등성 테스트");
-        Assertions.assertThat(rooms).extracting("roomNumber").containsExactly(1,2,3);
-        Assertions.assertThat(rooms).extracting("capacity").containsExactly(4,4,2);
+        assertThat(rooms).extracting("roomNumber").containsExactly(1,2,3);
+        assertThat(rooms).extracting("capacity").containsExactly(4,4,2);
         assertThat(opening).isEqualTo("09:00");
     }
 
@@ -43,11 +46,77 @@ class PlaceTest {
                 .ownerId(1l)
                 .build();
 
-        Assertions.assertThatCode(() -> place.verifyOwner(1l))
+        assertThatCode(() -> place.verifyOwner(1l))
                         .doesNotThrowAnyException();
 
-        Assertions.assertThatThrownBy(() -> place.verifyOwner(10l))
+        assertThatThrownBy(() -> place.verifyOwner(10l))
                 .isInstanceOf(NotPermissionException.class)
-                .hasMessage(CommonExceptionMessage.NOT_PERMISSION);
+                .hasMessage(NOT_PERMISSION);
+    }
+
+    @DisplayName("place 운영 시간을 변경할 수 있다. 메서드 호출 시, 입력된 값으로 변경된다.")
+    @Test
+    void change_operation() {
+        //given
+        Operation operation = Operation.of(
+                LocalTime.of(12, 0, 0),
+                LocalTime.of(20, 0, 0),
+                List.of(DayOfWeek.MONDAY));
+
+        Place place = Place.builder()
+                .ownerId(1l)
+                .operation(operation)
+                .build();
+
+        //when
+        long operationChangeRequesterId = 1l;
+
+        Operation changedOperation = Operation.of(
+                LocalTime.of(14, 0, 0),
+                LocalTime.of(22, 0, 0),
+                List.of(DayOfWeek.TUESDAY));
+
+        place.changeOperation(operationChangeRequesterId,
+                changedOperation.getOpening(),
+                changedOperation.getClosing(),
+                changedOperation.getHolidays());
+
+        //then
+        assertThat(place.getOperation()).extracting("opening").isEqualTo(LocalTime.of(14, 0 ,0));
+        assertThat(place.getOperation()).extracting("closing").isEqualTo(LocalTime.of(22, 0 ,0));
+        assertThat(place.getOperation()).extracting("holidays").isEqualTo(List.of(DayOfWeek.TUESDAY));
+    }
+
+    @DisplayName("place Owner 가 아닌 사람은 변경 권한이 없다. " +
+            "즉 메서드 파라미터로 받은 OwnerId 와 Place 도큐먼트의 OwnerId가 일치하지 않을 경우 " +
+            "NotPermissionException 이 발생한다.")
+    @Test
+    void change_operation_fail() {
+        //given
+        Operation operation = Operation.of(
+                LocalTime.of(12, 0, 0),
+                LocalTime.of(20, 0, 0),
+                List.of(DayOfWeek.MONDAY));
+
+        Place place = Place.builder()
+                .ownerId(1l)
+                .operation(operation)
+                .build();
+
+        //when
+        long notOwnerId = 5l;
+
+        Operation changedOperation = Operation.of(
+                LocalTime.of(14, 0, 0),
+                LocalTime.of(22, 0, 0),
+                List.of(DayOfWeek.TUESDAY));
+
+        assertThatThrownBy(() -> place.changeOperation(notOwnerId,
+                changedOperation.getOpening(),
+                changedOperation.getClosing(),
+                changedOperation.getHolidays()))
+                .isInstanceOf(NotPermissionException.class)
+                .hasMessage(NOT_PERMISSION);
+
     }
 }

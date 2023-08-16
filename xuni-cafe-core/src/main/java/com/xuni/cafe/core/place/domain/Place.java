@@ -27,7 +27,7 @@ public class Place {
     private Long ownerId;
     private PlaceType type;
     @Indexed(unique = true)
-    private Address address;
+    private final Address address;
     private List<Room> rooms;
     private Operation operation;
 
@@ -47,14 +47,15 @@ public class Place {
     }
 
     void verifyOwner(Long ownerId) {
-        log.info("check owner input ownerId {}, place ownerId {}",  ownerId, this.ownerId);
-
-        if (this.ownerId != ownerId) {
+        if (isNotOwner(ownerId)) {
             throw new NotPermissionException();
         }
     }
 
-    // TODO : ownerId 인자와 인스턴스가 가진 ownerId 가 일치해도 verifyOwner 메서드를 통과하지 못하는 이슈
+    private boolean isNotOwner(Long ownerId) {
+        return !this.ownerId.equals(ownerId);
+    }
+
     public void changeOperation(Long ownerId, LocalTime opening, LocalTime closing, List<DayOfWeek> holidays) {
         verifyOwner(ownerId);
         operation.setOpening(opening);

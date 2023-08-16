@@ -6,6 +6,7 @@ import com.xuni.cafe.core.place.domain.PlaceType;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public record PlaceForm(
         @Size(max=7)
         @UniqueElements(message = HOLIDAY_NOT_DUPLICATION)
                 // TODO : Integer Type -> DayOfWeek Type 으로 변경해야함
-        List<Integer> closedDays,
+        List<DayOfWeek> closedDays,
         @NotEmpty
         List<Integer> capacities
 ) {
